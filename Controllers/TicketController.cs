@@ -51,9 +51,9 @@ public class TicketController : ControllerBase
     }
 
     [HttpPost("book-ticket")]
-    public async Task<ActionResult<BookTicketResponse>> BookTicket(
-        [FromBody] BookTicketRequest request,
-        CancellationToken cancellationToken)
+    public async Task<ActionResult<object>> BookTicket(
+    [FromBody] BookTicketRequest request,
+    CancellationToken cancellationToken)
     {
         var command = new BookTicketCommand
         {
@@ -61,7 +61,35 @@ public class TicketController : ControllerBase
         };
 
         var result = await _mediator.Send(command, cancellationToken);
-        return CreatedAtAction(nameof(GetBookedTicket), new { bookedTicketId = Guid.NewGuid().ToString() }, result);
+
+        // ✅ Format POST response (NO quantity, NO eventDate)
+        var formattedResponse = new
+        {
+            tickets = result.Tickets.Select(t => new
+            {
+                ticketCode = t.TicketCode,
+                ticketName = t.TicketName,
+                price = t.Price
+            }).ToList(),
+            ticketsPerCategories = result.TicketsPerCategories.Select(c => new
+            {
+                categoryName = c.CategoryName,
+                summaryPrice = c.SummaryPrice,
+                tickets = c.Tickets.Select(t => new
+                {
+                    ticketCode = t.TicketCode,
+                    ticketName = t.TicketName,
+                    price = t.Price
+                }).ToList()
+            }).ToList(),
+            priceSummary = result.PriceSummary,
+            totalTickets = result.TotalTickets
+        };
+
+        return CreatedAtAction(
+            nameof(GetBookedTicket),
+            new { bookedTicketId = Guid.NewGuid().ToString() },
+            formattedResponse);
     }
 
     [HttpGet("get-booked-ticket/{bookedTicketId}")]

@@ -113,10 +113,10 @@ public class RevokeTicketCommandHandler : IRequestHandler<RevokeTicketCommand, R
 
         return new RevokeTicketResponse
         {
-            TicketCode = ticket.KodeTiket,       // ✅ English property name
-            TicketName = ticket.NamaTiket,       // ✅ English property name
-            CategoryName = ticket.Kategori,      // ✅ English property name
-            QuantityLeft = remainingQuantity     // ✅ English property name
+            TicketCode = ticket.KodeTiket,
+            TicketName = ticket.NamaTiket,
+            CategoryName = ticket.Kategori,
+            QuantityLeft = remainingQuantity
         };
     }
 }

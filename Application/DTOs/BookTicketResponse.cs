@@ -1,26 +1,24 @@
+﻿// ✅ NEW FILE - For POST API only
 namespace Acceloka.Api.Application.DTOs;
 
 public class BookTicketResponse
 {
-    public List<TicketDetailDto> Tickets { get; set; } = new();
-    public List<TicketsPerCategoryDto> TicketsPerCategories { get; set; } = new();
+    public List<BookTicketDetailDto> Tickets { get; set; } = new();
+    public List<BookTicketsPerCategoryDto> TicketsPerCategories { get; set; } = new();
     public decimal PriceSummary { get; set; }
     public int TotalTickets { get; set; }
 }
 
-public class TicketDetailDto
+public class BookTicketDetailDto  // ✅ For POST API - NO EventDate, NO Quantity
 {
-    public string TicketCode { get; set; }
-    public string TicketName { get; set; }
-    public DateTime EventDate { get; set; }
-    public int Quantity { get; set; }
-    public decimal Price { get; set; }
+    public string TicketCode { get; set; } = string.Empty;
+    public string TicketName { get; set; } = string.Empty;
+    public decimal Price { get; set; }  // ✅ Only these 3 fields
 }
 
-public class TicketsPerCategoryDto
+public class BookTicketsPerCategoryDto  // ✅ For POST API
 {
-    public int QuantityPerCategory { get; set; }
-    public string CategoryName { get; set; }
+    public string CategoryName { get; set; } = string.Empty;
     public decimal SummaryPrice { get; set; }
-    public List<TicketDetailDto> Tickets { get; set; }
+    public List<BookTicketDetailDto> Tickets { get; set; } = new();
 }

@@ -1,16 +1,18 @@
 ﻿using Acceloka.Api.Application.DTOs;
 using Acceloka.Api.Common.Exceptions;
 using Acceloka.Api.Domain;
-using Acceloka.Api.Infrastructure.Data;
 using Acceloka.Api.Infrastructure.Data.Repositories;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Acceloka.Api.Infrastructure.Data.DbContext;
+using MediatR;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Acceloka.Api.Application.Commands;
 
-public class BookTicketCommandHandler
-    : IRequestHandler<BookTicketCommand, BookTicketResponse>
+public class BookTicketCommandHandler : IRequestHandler<BookTicketCommand, BookTicketResponse>
 {
     private readonly ITicketRepository _ticketRepository;
     private readonly IBookedTicketRepository _bookedTicketRepository;
@@ -43,14 +45,15 @@ public class BookTicketCommandHandler
         var bookingDate = DateTime.Now;
 
         var ticketCache = new Dictionary<string, Ticket>();
-        var ticketsPerCategory = new Dictionary<string, TicketsPerCategoryDto>();
-        var ticketDetails = new List<TicketDetailDto>();
+        var ticketsPerCategory = new Dictionary<string, BookTicketsPerCategoryDto>();
+        var allTicketDetails = new List<BookTicketDetailDto>();
 
         using var transaction = await _dbContext.Database
             .BeginTransactionAsync(cancellationToken);
 
         try
         {
+            // ===== PHASE 1: Validation =====
             foreach (var ticketItem in request.Request.Tickets)
             {
                 if (ticketItem.Quantity <= 0)
@@ -107,10 +110,12 @@ public class BookTicketCommandHandler
                 ticketCache[ticketItem.KodeTiket] = ticket;
             }
 
+            // ===== PHASE 2: Booking =====
             foreach (var ticketItem in request.Request.Tickets)
             {
                 var ticket = ticketCache[ticketItem.KodeTiket];
 
+                // Save to database
                 var bookedTicket = new BookedTicket
                 {
                     BookedTicketId = bookedTicketId,
@@ -119,45 +124,43 @@ public class BookTicketCommandHandler
                     BookingDate = bookingDate
                 };
 
-                await _bookedTicketRepository
-                    .AddBookedTicketAsync(bookedTicket, cancellationToken);
+                await _bookedTicketRepository.AddBookedTicketAsync(bookedTicket, cancellationToken);
 
-                var ticketDetail = new TicketDetailDto
+                // ✅ Build POST-specific ticket detail (NO quantity, NO eventDate)
+                var ticketDetail = new BookTicketDetailDto
                 {
                     TicketCode = ticket.KodeTiket,
                     TicketName = ticket.NamaTiket,
                     Price = ticket.Harga
                 };
 
-                ticketDetails.Add(ticketDetail);
+                allTicketDetails.Add(ticketDetail);
 
+                // Build category structure
                 if (!ticketsPerCategory.ContainsKey(ticket.Kategori))
                 {
-                    ticketsPerCategory[ticket.Kategori] = new TicketsPerCategoryDto
+                    ticketsPerCategory[ticket.Kategori] = new BookTicketsPerCategoryDto
                     {
                         CategoryName = ticket.Kategori,
                         SummaryPrice = 0,
-                        Tickets = new List<TicketDetailDto>()
+                        Tickets = new List<BookTicketDetailDto>()
                     };
                 }
 
-                ticketsPerCategory[ticket.Kategori].Tickets.Add(ticketDetail);
-                ticketsPerCategory[ticket.Kategori].SummaryPrice
-                    += ticket.Harga * ticketItem.Quantity;
+                var category = ticketsPerCategory[ticket.Kategori];
+                category.SummaryPrice += ticket.Harga * ticketItem.Quantity;
+                category.Tickets.Add(ticketDetail);
             }
 
             await _dbContext.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
 
-            var priceSummary = ticketsPerCategory.Values
-                .Sum(t => t.SummaryPrice);
-
-            var totalTickets = request.Request.Tickets
-                .Sum(t => t.Quantity);
+            var priceSummary = ticketsPerCategory.Values.Sum(t => t.SummaryPrice);
+            var totalTickets = request.Request.Tickets.Sum(t => t.Quantity);
 
             return new BookTicketResponse
             {
-                Tickets = ticketDetails,
+                Tickets = allTicketDetails,
                 TicketsPerCategories = ticketsPerCategory.Values.ToList(),
                 PriceSummary = priceSummary,
                 TotalTickets = totalTickets
