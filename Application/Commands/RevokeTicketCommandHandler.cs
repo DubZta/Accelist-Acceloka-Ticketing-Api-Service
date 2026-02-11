@@ -1,7 +1,11 @@
-using Acceloka.Api.Application.DTOs;
+﻿using Acceloka.Api.Application.DTOs;
 using Acceloka.Api.Common.Exceptions;
+using Acceloka.Api.Domain;
 using Acceloka.Api.Infrastructure.Data.Repositories;
 using MediatR;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Acceloka.Api.Application.Commands;
 
@@ -20,24 +24,32 @@ public class RevokeTicketCommandHandler : IRequestHandler<RevokeTicketCommand, R
 
     public async Task<RevokeTicketResponse> Handle(RevokeTicketCommand request, CancellationToken cancellationToken)
     {
-        var bookedTicketIdExists = await _bookedTicketRepository.BookedTicketIdExistsAsync(request.BookedTicketId, cancellationToken);
-        if (!bookedTicketIdExists)
+
+        if (string.IsNullOrWhiteSpace(request.BookedTicketId))
         {
             throw new ProblemDetailsException(
-                404,
-                "https://tools.ietf.org/html/rfc7807#section-3.1",
-                "Not Found",
-                $"Booked tiket Id {request.BookedTicketId} tidak terdaftar");
+                400,
+                "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+                "Bad Request",
+                "Booked ticket ID tidak boleh kosong");
         }
 
-        var ticketExists = await _ticketRepository.TicketExistsAsync(request.KodeTicket, cancellationToken);
-        if (!ticketExists)
+        if (string.IsNullOrWhiteSpace(request.KodeTicket))
         {
             throw new ProblemDetailsException(
-                404,
-                "https://tools.ietf.org/html/rfc7807#section-3.1",
-                "Not Found",
-                $"Kode tiket {request.KodeTicket} tidak terdaftar");
+                400,
+                "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+                "Bad Request",
+                "Kode tiket tidak boleh kosong");
+        }
+
+        if (request.Qty <= 0)
+        {
+            throw new ProblemDetailsException(
+                400,
+                "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+                "Bad Request",
+                "Quantity harus lebih besar dari 0");
         }
 
         var bookedTicket = await _bookedTicketRepository.GetBookedTicketAsync(
@@ -49,23 +61,33 @@ public class RevokeTicketCommandHandler : IRequestHandler<RevokeTicketCommand, R
         {
             throw new ProblemDetailsException(
                 404,
-                "https://tools.ietf.org/html/rfc7807#section-3.1",
+                "https://tools.ietf.org/html/rfc9110#section-15.5.3",
                 "Not Found",
-                $"Kode tiket {request.KodeTicket} tidak ditemukan untuk BookedTicketId {request.BookedTicketId}");
+                $"Kode tiket {request.KodeTicket} tidak ditemukan untuk booking ID {request.BookedTicketId}");
         }
 
         if (request.Qty > bookedTicket.Qty)
         {
             throw new ProblemDetailsException(
                 400,
-                "https://tools.ietf.org/html/rfc7807#section-3.1",
+                "https://tools.ietf.org/html/rfc9110#section-15.5.1",
                 "Bad Request",
-                $"Qty melebihi jumlah tiket yang sudah di-booking");
+                $"Qty melebihi jumlah tiket yang telah di-booking ({bookedTicket.Qty} tiket tersedia)");
         }
 
-        bookedTicket.Qty -= request.Qty;
+        var ticket = await _ticketRepository.GetTicketByCodeAsync(request.KodeTicket, cancellationToken);
+        if (ticket == null)
+        {
+            throw new ProblemDetailsException(
+                404,
+                "https://tools.ietf.org/html/rfc9110#section-15.5.3",
+                "Not Found",
+                $"Tiket dengan kode {request.KodeTicket} tidak ditemukan di database");
+        }
 
-        if (bookedTicket.Qty <= 0)
+        var remainingQuantity = bookedTicket.Qty - request.Qty;
+
+        if (remainingQuantity == 0)
         {
             await _bookedTicketRepository.DeleteBookedTicketAsync(
                 request.BookedTicketId,
@@ -74,34 +96,27 @@ public class RevokeTicketCommandHandler : IRequestHandler<RevokeTicketCommand, R
         }
         else
         {
+            bookedTicket.Qty = remainingQuantity;
             await _bookedTicketRepository.UpdateBookedTicketAsync(bookedTicket, cancellationToken);
         }
 
-        var allBookedTickets = await _bookedTicketRepository.GetBookedTicketsByBookingIdAsync(request.BookedTicketId, cancellationToken);
+        var allBookedTickets = await _bookedTicketRepository.GetBookedTicketsByBookingIdAsync(
+            request.BookedTicketId,
+            cancellationToken);
+
         if (!allBookedTickets.Any())
         {
-            await _bookedTicketRepository.DeleteAllBookedTicketsByBookingIdAsync(request.BookedTicketId, cancellationToken);
+            await _bookedTicketRepository.DeleteAllBookedTicketsByBookingIdAsync(
+                request.BookedTicketId,
+                cancellationToken);
         }
-
-        var ticket = await _ticketRepository.GetTicketByCodeAsync(request.KodeTicket, cancellationToken);
-        if (ticket == null)
-        {
-            throw new ProblemDetailsException(
-                404,
-                "https://tools.ietf.org/html/rfc7807#section-3.1",
-                "Not Found",
-                $"Tiket dengan kode {request.KodeTicket} tidak ditemukan");
-        }
-
-        var remainingQuota = await _ticketRepository.GetRemainingQuotaAsync(request.KodeTicket, cancellationToken);
 
         return new RevokeTicketResponse
         {
-            KodeTicket = ticket.KodeTiket,
-            NamaTiket = ticket.NamaTiket,
-            NamaKategori = ticket.Kategori,
-            SisaQuantity = remainingQuota
+            TicketCode = ticket.KodeTiket,       // ✅ English property name
+            TicketName = ticket.NamaTiket,       // ✅ English property name
+            CategoryName = ticket.Kategori,      // ✅ English property name
+            QuantityLeft = remainingQuantity     // ✅ English property name
         };
     }
 }
-
