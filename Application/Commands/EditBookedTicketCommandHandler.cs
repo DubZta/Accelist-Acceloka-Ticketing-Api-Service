@@ -93,7 +93,7 @@ public class EditBookedTicketCommandHandler : IRequestHandler<EditBookedTicketCo
                     TicketCode = ticket.KodeTiket,
                     TicketName = ticket.NamaTiket,
                     CategoryName = ticket.Kategori,
-                    SisaQuantity = finalRemainingQuota
+                    QuantityLeft = finalRemainingQuota
                 });
             }
         }
