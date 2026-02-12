@@ -14,7 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
     .WriteTo.File(
-        path: Path.Combine("logs", $"Log-{DateTime.Now:yyyyMMdd}.txt"),
+        path: Path.Combine("logs", "Log-.txt"),
         rollingInterval: RollingInterval.Day,
         retainedFileCountLimit: null,
         outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
