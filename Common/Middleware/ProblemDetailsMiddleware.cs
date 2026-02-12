@@ -76,4 +76,3 @@ public class ProblemDetailsMiddleware
         await context.Response.WriteAsync(json);
     }
 }
-

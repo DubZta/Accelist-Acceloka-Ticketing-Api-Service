@@ -1,4 +1,4 @@
-using Acceloka.Api.Application.DTOs;
+﻿using Acceloka.Api.Application.DTOs;
 using Acceloka.Api.Infrastructure.Data.Repositories;
 using MediatR;
 
@@ -49,4 +49,3 @@ public class GetAvailableTicketsQueryHandler : IRequestHandler<GetAvailableTicke
         }).ToList();
     }
 }
-

@@ -9,4 +9,3 @@ public class Ticket
     public int Quota { get; set; }
     public DateTime EventDate { get; set; }
 }
-

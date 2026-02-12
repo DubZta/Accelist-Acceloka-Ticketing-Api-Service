@@ -53,7 +53,6 @@ public class BookTicketCommandHandler : IRequestHandler<BookTicketCommand, BookT
 
         try
         {
-            // ===== PHASE 1: Validation =====
             foreach (var ticketItem in request.Request.Tickets)
             {
                 if (ticketItem.Quantity <= 0)
@@ -110,12 +109,10 @@ public class BookTicketCommandHandler : IRequestHandler<BookTicketCommand, BookT
                 ticketCache[ticketItem.KodeTiket] = ticket;
             }
 
-            // ===== PHASE 2: Booking =====
             foreach (var ticketItem in request.Request.Tickets)
             {
                 var ticket = ticketCache[ticketItem.KodeTiket];
 
-                // Save to database
                 var bookedTicket = new BookedTicket
                 {
                     BookedTicketId = bookedTicketId,
@@ -126,7 +123,6 @@ public class BookTicketCommandHandler : IRequestHandler<BookTicketCommand, BookT
 
                 await _bookedTicketRepository.AddBookedTicketAsync(bookedTicket, cancellationToken);
 
-                // ✅ Build POST-specific ticket detail (NO quantity, NO eventDate)
                 var ticketDetail = new BookTicketDetailDto
                 {
                     TicketCode = ticket.KodeTiket,
@@ -136,7 +132,6 @@ public class BookTicketCommandHandler : IRequestHandler<BookTicketCommand, BookT
 
                 allTicketDetails.Add(ticketDetail);
 
-                // Build category structure
                 if (!ticketsPerCategory.ContainsKey(ticket.Kategori))
                 {
                     ticketsPerCategory[ticket.Kategori] = new BookTicketsPerCategoryDto

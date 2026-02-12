@@ -7,4 +7,3 @@ public class BookedTicket
     public int Qty { get; set; }
     public DateTime BookingDate { get; set; }
 }
-

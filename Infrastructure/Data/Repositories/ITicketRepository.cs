@@ -21,4 +21,3 @@ public interface ITicketRepository
     Task<bool> TicketExistsAsync(string kodeTiket, CancellationToken cancellationToken = default);
     Task<int> GetRemainingQuotaAsync(string kodeTiket, CancellationToken cancellationToken = default);
 }
-

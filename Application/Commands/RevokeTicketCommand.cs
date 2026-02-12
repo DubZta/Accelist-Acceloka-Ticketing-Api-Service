@@ -9,4 +9,3 @@ public class RevokeTicketCommand : IRequest<RevokeTicketResponse>
     public string KodeTicket { get; set; } = string.Empty;
     public int Qty { get; set; }
 }
-

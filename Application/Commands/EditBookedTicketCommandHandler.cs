@@ -107,4 +107,3 @@ public class EditBookedTicketCommandHandler : IRequestHandler<EditBookedTicketCo
         return responses;
     }
 }
-

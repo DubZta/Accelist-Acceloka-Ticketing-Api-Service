@@ -29,4 +29,3 @@ public class TicketBookingItemValidator : AbstractValidator<TicketBookingItem>
             .WithMessage("Quantity harus lebih besar dari 0");
     }
 }
-

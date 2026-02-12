@@ -9,4 +9,3 @@ public class GetAvailableTicketResponse
     public decimal Price { get; set; }
     public int Quota { get; set; }
 }
-

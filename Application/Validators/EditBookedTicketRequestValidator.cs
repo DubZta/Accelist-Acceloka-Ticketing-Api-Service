@@ -29,4 +29,3 @@ public class EditTicketItemValidator : AbstractValidator<EditTicketItem>
             .WithMessage("Minimum quantity adalah 1");
     }
 }
-

@@ -7,4 +7,3 @@ public class RevokeTicketResponse
     public string CategoryName { get; set; } = string.Empty;
     public int QuantityLeft { get; set; }
 }
-

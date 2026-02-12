@@ -7,4 +7,3 @@ public class BookTicketCommand : IRequest<BookTicketResponse>
 {
     public BookTicketRequest Request { get; set; } = new();
 }
-

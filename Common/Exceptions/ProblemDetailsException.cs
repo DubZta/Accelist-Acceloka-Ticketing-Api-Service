@@ -22,4 +22,3 @@ public class ProblemDetailsException : Exception
         Instance = instance;
     }
 }
-

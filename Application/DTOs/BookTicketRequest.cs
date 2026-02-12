@@ -10,4 +10,3 @@ public class TicketBookingItem
     public string KodeTiket { get; set; } = string.Empty;
     public int Quantity { get; set; }
 }
-

@@ -112,4 +112,3 @@ public class TicketRepository : ITicketRepository
         return ticket.Quota - bookedQuantity;
     }
 }
-

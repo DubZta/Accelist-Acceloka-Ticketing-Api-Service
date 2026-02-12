@@ -44,4 +44,3 @@ public class AccelokaDbContext : Microsoft.EntityFrameworkCore.DbContext
         });
     }
 }
-

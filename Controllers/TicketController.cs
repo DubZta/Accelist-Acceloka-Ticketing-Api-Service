@@ -62,7 +62,6 @@ public class TicketController : ControllerBase
 
         var result = await _mediator.Send(command, cancellationToken);
 
-        // ✅ Format POST response (NO quantity, NO eventDate)
         var formattedResponse = new
         {
             tickets = result.Tickets.Select(t => new

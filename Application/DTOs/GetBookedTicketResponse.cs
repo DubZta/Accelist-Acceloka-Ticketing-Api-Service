@@ -1,5 +1,4 @@
-﻿// ✅ KEEP THIS UNCHANGED - For GET API
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Acceloka.Api.Application.DTOs;
 
@@ -17,11 +16,11 @@ public class TicketsPerCategoryDto
     public List<TicketDetailDto> Tickets { get; set; } = new();
 }
 
-public class TicketDetailDto  // ✅ For GET API - HAS EventDate and Quantity
+public class TicketDetailDto
 {
     public string TicketCode { get; set; } = string.Empty;
     public string TicketName { get; set; } = string.Empty;
-    public DateTime EventDate { get; set; }  // ✅ KEEP this
-    public int Quantity { get; set; }  // ✅ KEEP this
+    public DateTime EventDate { get; set; }
+    public int Quantity { get; set; }
     public decimal Price { get; set; }
 }
