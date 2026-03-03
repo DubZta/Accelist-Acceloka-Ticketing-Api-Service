@@ -27,6 +27,17 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:3000")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
 // Configure DbContext
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? "Server=(localdb)\\mssqllocaldb;Database=AccelokaDb;Trusted_Connection=True;MultipleActiveResultSets=true";
@@ -61,6 +72,7 @@ app.UseHttpsRedirection();
 app.UseMiddleware<ProblemDetailsMiddleware>();
 
 app.UseAuthorization();
+app.UseCors("AllowFrontend");
 
 app.MapControllers();
 
