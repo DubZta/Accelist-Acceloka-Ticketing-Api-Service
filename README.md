@@ -9,11 +9,13 @@ A complete SaaS ticketing solution built with **ASP.NET 10** (Backend) and **Nex
 Choose which component you want to set up:
 
 ### 🔵 **Backend Setup**
+
 **ASP.NET 10 API Service** — Book, retrieve, edit, and revoke tickets via RESTful APIs.
 
-👉 **[Read Backend Setup Guide](./Accelist-Acceloka-Ticketing-Api-Service/README.md)**
+👉 **[Read Backend Setup Guide](./Backend_Guide.md)**
 
 **Includes:**
+
 - Installation & prerequisites
 - Database migration guide
 - Running the API server
@@ -23,11 +25,13 @@ Choose which component you want to set up:
 ---
 
 ### 🟢 **Frontend Setup**
+
 **Next.js 16 React App** — Product-first ticketing UI with shopping cart, booking management, and animations.
 
-👉 **[Read Frontend Setup Guide](./Accelist-Acceloka-Ticketing-Api-Service/acceloka-ui/README.md)**
+👉 **[Read Frontend Setup Guide](./Frontend_Guide.md)**
 
 **Includes:**
+
 - Installation & prerequisites
 - Development server setup
 - Project structure & components
@@ -39,6 +43,7 @@ Choose which component you want to set up:
 ## 🚀 Quick Start (Full Stack)
 
 ### Prerequisites
+
 - **.NET 10** SDK ([Download](https://dotnet.microsoft.com/download))
 - **Node.js** ≥ 18 & **npm** ≥ 9 ([Download](https://nodejs.org))
 - **SQL Server** or compatible database
@@ -68,18 +73,22 @@ The UI will start at `http://localhost:3000`
 
 ```
 exam_ui/
-├── README.md (YOU ARE HERE)
+├── README.md (YOU ARE HERE)                        📖 Main entry point
+├── Backend_Guide.md                                👈 Backend setup guide
+├── Frontend_Guide.md                               👈 Frontend setup guide
 │
-├── Accelist-Acceloka-Ticketing-Api-Service/       [Backend]
-│   ├── README.md                                   👈 Backend setup guide
+├── Accelist-Acceloka-Ticketing-Api-Service/       [Backend Source]
 │   ├── Program.cs
 │   ├── Accelist-Acceloka-Ticketing-Api-Service.csproj
 │   ├── Controllers/
 │   ├── Application/
+│   │   ├── Commands/
+│   │   ├── Queries/
+│   │   ├── DTOs/
+│   │   └── Validators/
 │   ├── Domain/
 │   ├── Infrastructure/
-│   └── acceloka-ui/                                [Frontend]
-│       ├── README.md                               👈 Frontend setup guide
+│   └── acceloka-ui/                                [Frontend Source]
 │       ├── package.json
 │       ├── next.config.ts
 │       ├── src/
@@ -96,15 +105,15 @@ exam_ui/
 
 ## 📌 Key Features
 
-| Feature | Backend | Frontend |
-|---------|---------|----------|
-| **Available Tickets** | ✅ GET with filters | ✅ ProductSection |
-| **Search & Filter** | ✅ Query params | ✅ SearchForm + URL sync |
-| **Book Tickets** | ✅ POST /book-ticket | ✅ CartDrawer + checkout |
-| **Get Booking** | ✅ GET /get-booked-ticket/{id} | ✅ BookingsPanel search |
-| **Edit Quantity** | ✅ PUT /edit-booked-ticket/{id} | ✅ Inline editor |
-| **Revoke Tickets** | ✅ DELETE /revoke-ticket/{id}/{code}/{qty} | ✅ Revoke with confirmation |
-| **Error Handling** | ✅ RFC 7807 | ✅ problem.detail display |
+| Feature               | Backend                                    | Frontend                    |
+| --------------------- | ------------------------------------------ | --------------------------- |
+| **Available Tickets** | ✅ GET with filters                        | ✅ ProductSection           |
+| **Search & Filter**   | ✅ Query params                            | ✅ SearchForm + URL sync    |
+| **Book Tickets**      | ✅ POST /book-ticket                       | ✅ CartDrawer + checkout    |
+| **Get Booking**       | ✅ GET /get-booked-ticket/{id}             | ✅ BookingsPanel search     |
+| **Edit Quantity**     | ✅ PUT /edit-booked-ticket/{id}            | ✅ Inline editor            |
+| **Revoke Tickets**    | ✅ DELETE /revoke-ticket/{id}/{code}/{qty} | ✅ Revoke with confirmation |
+| **Error Handling**    | ✅ RFC 7807                                | ✅ problem.detail display   |
 
 ---
 
@@ -138,22 +147,24 @@ Both components are built to strictly satisfy **Accelist Exam 2 — 2026** requi
 
 All endpoints run on `http://localhost:5176/api/v1/`
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/get-available-ticket` | List tickets with pagination & filters |
-| `POST` | `/book-ticket` | Book one or more tickets |
-| `GET` | `/get-booked-ticket/{id}` | Get booking details by ID |
-| `PUT` | `/edit-booked-ticket/{id}` | Update quantity of booked ticket |
-| `DELETE` | `/revoke-ticket/{id}/{code}/{qty}` | Revoke ticket quantity |
-| `GET` | `/list-booked-ticket-ids` | List all booking reference IDs |
+| Method   | Endpoint                           | Description                            |
+| -------- | ---------------------------------- | -------------------------------------- |
+| `GET`    | `/get-available-ticket`            | List tickets with pagination & filters |
+| `POST`   | `/book-ticket`                     | Book one or more tickets               |
+| `GET`    | `/get-booked-ticket/{id}`          | Get booking details by ID              |
+| `PUT`    | `/edit-booked-ticket/{id}`         | Update quantity of booked ticket       |
+| `DELETE` | `/revoke-ticket/{id}/{code}/{qty}` | Revoke ticket quantity                 |
+| `GET`    | `/list-booked-ticket-ids`          | List all booking reference IDs         |
 
 ---
 
-## 📞 Support
+## 📞 Quick Links
 
-- 📖 **Backend Guide**: See [Accelist-Acceloka-Ticketing-Api-Service/README.md](./Accelist-Acceloka-Ticketing-Api-Service/README.md)
-- 🎨 **Frontend Guide**: See [acceloka-ui/README.md](./Accelist-Acceloka-Ticketing-Api-Service/acceloka-ui/README.md)
-- 📋 **Implementation Plan**: See [implementation_plan.md.resolved](./implementation_plan.md.resolved)
+- 📖 **Backend Setup**: [Backend_Guide.md](./Backend_Guide.md) — MARVEL Pattern, RFC 7807, Exam 1 2026
+- 🎨 **Frontend Setup**: [Frontend_Guide.md](./Frontend_Guide.md) — Next.js 16, Animations, Exam 2 2026
+- 📋 **Implementation Plan**: [implementation_plan.md.resolved](./implementation_plan.md.resolved)
+- 📂 **Backend Source**: [Accelist-Acceloka-Ticketing-Api-Service/](./Accelist-Acceloka-Ticketing-Api-Service/)
+- 📂 **Frontend Source**: [Accelist-Acceloka-Ticketing-Api-Service/acceloka-ui/](./Accelist-Acceloka-Ticketing-Api-Service/acceloka-ui/)
 
 ---
 
