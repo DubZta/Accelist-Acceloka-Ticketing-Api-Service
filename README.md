@@ -1,532 +1,166 @@
-# Acceloka Ticketing API Service
+# 🎫 Accelist Acceloka - Ticketing Platform
 
-A backend API service for online ticket booking operations built with ASP.NET 10, following the **MARVEL Pattern** architecture as required by **Accelist Exam 1 - 2026**.
-
-## Exam Requirements Compliance
-
-This project implements **ALL** requirements from Exam 1 2026:
-
-| Requirement | Status | Implementation |
-|-------------|--------|----------------|
-| **MARVEL Pattern** | ✅ | MediatR + FluentValidation |
-| **RFC 7807 Error Handling** | ✅ | ProblemDetailsException middleware |
-| **HTTP Response Codes** | ✅ | Correct status codes (200, 201, 400, 404) |
-| **Serilog File Sink** | ✅ | Log level: Information, File: `Log-{YYYYMMDD}.txt`, Folder: `/logs` |
-| **Async/Await** | ✅ | All database operations are async |
-| **C# Coding Conventions** | ✅ | PascalCase, camelCase, braces, LINQ method syntax |
-| **Accelist Coding Conventions** | ✅ | Braces for all control structures, LINQ method syntax |
-
-### Bonus Points Implemented
-- **Pagination** on GET available tickets (10 items per page)
-- **Transaction Support** for booking tickets (all-or-nothing)
+A complete SaaS ticketing solution built with **ASP.NET 10** (Backend) and **Next.js 16** (Frontend), developed for **Accelist Exam 2 — 2026**.
 
 ---
 
-## Architecture
+## 📚 Documentation Portal
 
-This project follows the **MARVEL Pattern** with the following structure:
-```
-Accelist-Acceloka-Ticketing-Api-Service/
-├── Application/              # MediatR handlers, DTOs, Validators
-│   ├── Commands/            # Command handlers
-│   ├── Queries/             # Query handlers
-│   ├── DTOs/                # Data Transfer Objects
-│   └── Validators/          # FluentValidation validators
-├── Common/                  # Shared utilities
-│   ├── Exceptions/          # ProblemDetailsException
-│   └── Middleware/          # ProblemDetailsMiddleware
-├── Controllers/             # API endpoints
-├── Domain/                  # Domain entities
-│   ├── Ticket.cs
-│   └── BookedTicket.cs
-├── Infrastructure/          # Data access layer
-│   └── Data/
-│       ├── DbContext/       # AccelokaDbContext
-│       └── Repositories/    # Repository implementations
-├── Migrations/              # EF Core migrations
-├── logs/                    # Runtime log files (excluded from git)
-├── appsettings.json         # Configuration
-└── Program.cs              # Application entry point
-```
+Choose which component you want to set up:
 
-## Technologies
+### 🔵 **Backend Setup**
+**ASP.NET 10 API Service** — Book, retrieve, edit, and revoke tickets via RESTful APIs.
 
-| Technology | Purpose | Version |
-|------------|---------|---------|
-| **.NET 10.0** | Runtime framework | 10.0 |
-| **ASP.NET Core Web API** | Web framework | 10.0 |
-| **Entity Framework Core** | ORM | 10.0 |
-| **MediatR** | CQRS pattern | Latest |
-| **FluentValidation** | Validation | Latest |
-| **Serilog** | Logging | Latest |
-| **SQL Server LocalDB** | Database | 2022 |
+👉 **[Read Backend Setup Guide](./Accelist-Acceloka-Ticketing-Api-Service/README.md)**
+
+**Includes:**
+- Installation & prerequisites
+- Database migration guide
+- Running the API server
+- All 5 API endpoints
+- Testing instructions
 
 ---
 
-## Prerequisites
+### 🟢 **Frontend Setup**
+**Next.js 16 React App** — Product-first ticketing UI with shopping cart, booking management, and animations.
 
-- **.NET 10 SDK**
-- **Visual Studio 2022**
-- **SQL Server LocalDB** (comes with Visual Studio 2022) or **SQL Server Express**
-- **Git**
-- **Postman**
+👉 **[Read Frontend Setup Guide](./Accelist-Acceloka-Ticketing-Api-Service/acceloka-ui/README.md)**
+
+**Includes:**
+- Installation & prerequisites
+- Development server setup
+- Project structure & components
+- UI features (Aurora, animations, cart)
+- Build & deployment
 
 ---
 
-## Step-by-Step Setup Guide
+## 🚀 Quick Start (Full Stack)
 
-### Step 1: Clone the Repository and Navigate to project directory
+### Prerequisites
+- **.NET 10** SDK ([Download](https://dotnet.microsoft.com/download))
+- **Node.js** ≥ 18 & **npm** ≥ 9 ([Download](https://nodejs.org))
+- **SQL Server** or compatible database
+
+### Step 1: Start the Backend
 
 ```bash
-git clone https://github.com/DubZta/Accelist-Acceloka-Ticketing-Api-Service
 cd Accelist-Acceloka-Ticketing-Api-Service
+dotnet run --launch-profile "http"
 ```
----
 
-### Step 2: Verify Project Structure
+The API will start at `http://localhost:5176`
+
+### Step 2: Start the Frontend
 
 ```bash
-dir
+cd Accelist-Acceloka-Ticketing-Api-Service/acceloka-ui
+npm install
+npm run dev
 ```
 
-**Expected Output:**
-```
-Migrations/
-appsettings.json
-Program.cs
-Accelist-Acceloka-Ticketing-Api-Service.csproj
-...
-```
----
-
-### Step 3: Restore NuGet Packages
-
-```bash
-dotnet restore
-```
+The UI will start at `http://localhost:3000`
 
 ---
 
-### Step 4: Update Database Connection (if needed)
+## 🏗️ Project Structure
 
-Edit `appsettings.json` and verify the connection string:
-
-```json
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=AccelokaDb;Trusted_Connection=True;MultipleActiveResultSets=true"
-  }
-}
 ```
-
-**Alternative:** If using SQL Server Express:
-```json
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=localhost\\SQLEXPRESS;Database=AccelokaDb;Trusted_Connection=True;MultipleActiveResultSets=true"
-  }
-}
-```
----
-
-### Step 5: Create Database
-
-#### **Step 5.1: Apply EF Core Migrations**
-
-```bash
-dotnet ef database update
-```
-
-**Expected Output:**
-```
-Build started...
-Build succeeded.
-Applying migration '20260211093927_InitialCreate'.
-Done.
-```
-
-**This creates:**
-- Database: `AccelokaDb`
-- Tables: `tiket`, `Bookedtiket`
-
-#### **Step 5.2: Verify Database in SQL Server Object Explorer**
-
-**In Visual Studio:**
-```
-View → SQL Server Object Explorer
-```
-
-**Navigate to:**
-```
-SQL Server
- └── (localdb)\MSSQLLocalDB
-     └── Databases
-         └── AccelokaDb
-            └── Tables
-                ├── dbo.tiket
-                └── dbo.Bookedtiket
-```
-
-**Success confirmed** when both tables are visible.
-
-#### **Step 5.3: Insert Initial Data**
-
-**Right-click on `AccelokaDb` → New Query**
-
-**Paste and execute the SQL insert script:**
-```sql
--- Insert 150 sample tickets into tiket table
--- (Paste content from InsertDataStuffs.sql here)
-```
-
-**Expected Output:**
-```
-(150 rows affected)
-Query executed successfully.
+exam_ui/
+├── README.md (YOU ARE HERE)
+│
+├── Accelist-Acceloka-Ticketing-Api-Service/       [Backend]
+│   ├── README.md                                   👈 Backend setup guide
+│   ├── Program.cs
+│   ├── Accelist-Acceloka-Ticketing-Api-Service.csproj
+│   ├── Controllers/
+│   ├── Application/
+│   ├── Domain/
+│   ├── Infrastructure/
+│   └── acceloka-ui/                                [Frontend]
+│       ├── README.md                               👈 Frontend setup guide
+│       ├── package.json
+│       ├── next.config.ts
+│       ├── src/
+│       │   ├── app/
+│       │   ├── components/
+│       │   ├── context/
+│       │   └── lib/
+│       └── public/
+│
+└── exam_ui.sln                                     [Solution file]
 ```
 
 ---
 
-### Step 6: Build the Project
+## 📌 Key Features
 
-```bash
-dotnet build
-```
-
-**Expected Output:**
-```
-Build succeeded.
-    0 Warning(s)
-    0 Error(s)
-```
----
-### Step 7: Run the Application
-
-```bash
-dotnet run
-```
-
-**Expected Output:**
-```
-================================================================
-               Acceloka API is running successfully              
-Test Endpoint: http://localhost:5176/api/v1/get-available-ticket
-================================================================
-info: Microsoft.Hosting.Lifetime[14]
-      Now listening on: http://localhost:5176
-info: Microsoft.Hosting.Lifetime[0]
-      Application started. Press Ctrl+C to shut down.
-```
----
-### Step 8: Verify API is Running
-
-Open a new terminal and test the API:
-
-```bash
-curl http://localhost:5176/api/v1/get-available-ticket
-```
-
-**Expected:** Returns JSON array of available tickets
+| Feature | Backend | Frontend |
+|---------|---------|----------|
+| **Available Tickets** | ✅ GET with filters | ✅ ProductSection |
+| **Search & Filter** | ✅ Query params | ✅ SearchForm + URL sync |
+| **Book Tickets** | ✅ POST /book-ticket | ✅ CartDrawer + checkout |
+| **Get Booking** | ✅ GET /get-booked-ticket/{id} | ✅ BookingsPanel search |
+| **Edit Quantity** | ✅ PUT /edit-booked-ticket/{id} | ✅ Inline editor |
+| **Revoke Tickets** | ✅ DELETE /revoke-ticket/{id}/{code}/{qty} | ✅ Revoke with confirmation |
+| **Error Handling** | ✅ RFC 7807 | ✅ problem.detail display |
 
 ---
 
-## API Endpoints Documentation
+## 🧪 Testing the Full Flow
 
-### 1️⃣ GET Available Tickets
-
-**Endpoint:** `GET /api/v1/get-available-ticket`
-
-**Query Parameters:**
-| Parameter | Type | Description | Example |
-|-----------|------|-------------|---------|
-| `namaKategori` | string | Filter by category name | `Bioskop` |
-| `kodeTiket` | string | Filter by ticket code | `B001` |
-| `namaTiket` | string | Filter by ticket name | `Avengers` |
-| `harga` | decimal | Filter by price (≤) | `100000` |
-| `tanggalEventMinimal` | datetime | Event date ≥ | `2026-02-15` |
-| `tanggalEventMaksimal` | datetime | Event date ≤ | `2026-03-01` |
-| `orderBy` | string | Sort column | `price`, `eventDate`, `quota` |
-| `orderState` | string | Sort direction | `asc`, `desc` |
-| `page` | int | Page number | `1` |
-| `pageSize` | int | Items per page | `10` |
-
----
-### 2️⃣ POST Book Ticket
-
-**Endpoint:** `POST /api/v1/book-ticket`
-
-**Request Body:**
-```json
-{
-  "tickets": [
-    {
-      "kodeTiket": "B001",
-      "quantity": 2
-    },
-    {
-      "kodeTiket": "TK001",
-      "quantity": 3
-    }
-  ]
-}
-```
-
-**Response (201 Created):**
-```json
-{
-  "tickets": [
-    {
-      "ticketCode": "B001",
-      "ticketName": "Avengers: Endgame (Reguler)",
-      "price": 50000.00
-    },
-    {
-      "ticketCode": "TK001",
-      "ticketName": "Bruno Mars: 24K Magic Tour (CAT 1)",
-      "price": 2500000.00
-    }
-  ],
-  "ticketsPerCategories": [
-    {
-      "categoryName": "Bioskop",
-      "summaryPrice": 100000.00,
-      "tickets": [
-        {
-          "ticketCode": "B001",
-          "ticketName": "Avengers: Endgame (Reguler)",
-          "price": 50000.00
-        }
-      ]
-    },
-    {
-      "categoryName": "Tiket Konser",
-      "summaryPrice": 7500000.00,
-      "tickets": [
-        {
-          "ticketCode": "TK001",
-          "ticketName": "Bruno Mars: 24K Magic Tour (CAT 1)",
-          "price": 2500000.00
-        }
-      ]
-    }
-  ],
-  "priceSummary": 7600000.00,
-  "totalTickets": 5
-}
-```
-
-**Validations:**
-- ❌ 400 Bad Request: Kode tiket tidak terdaftar
-- ❌ 400 Bad Request: Quota tiket sudah habis
-- ❌ 400 Bad Request: Quantity melebihi quota
-- ❌ 400 Bad Request: Tanggal event ≤ tanggal booking
+1. **Access Homepage**: [http://localhost:3000](http://localhost:3000)
+2. **Browse Tickets**: Filter by category, date, and price
+3. **Add to Cart**: Click "Add to Cart" on any ticket
+4. **Checkout**: Open cart drawer and checkout all items at once
+5. **Verify Booking**: Go to "My Booking" and search by Booking Reference ID
+6. **Edit Quantity**: Increase/decrease items from the booking panel
+7. **Revoke**: Remove items or entire booking
+8. **Error Handling**: Try invalid inputs to see RFC 7807 error messages
 
 ---
 
-### 3️⃣ GET Booked Ticket Details
+## 📖 Exam Compliance
 
-**Endpoint:** `GET /api/v1/get-booked-ticket/{bookedTicketId}`
+Both components are built to strictly satisfy **Accelist Exam 2 — 2026** requirements:
 
-**Response (200 OK):**
-```json
-{
-  "priceSummary": 7600000.00,
-  "ticketsPerCategories": [
-    {
-      "quantityPerCategory": 2,
-      "categoryName": "Bioskop",
-      "summaryPrice": 100000.00,
-      "tickets": [
-        {
-          "ticketCode": "B001",
-          "ticketName": "Avengers: Endgame (Reguler)",
-          "eventDate": "15-02-2026 13:00",
-          "quantity": 2,
-          "price": 50000.00
-        }
-      ]
-    },
-    {
-      "quantityPerCategory": 3,
-      "categoryName": "Tiket Konser",
-      "summaryPrice": 7500000.00,
-      "tickets": [
-        {
-          "ticketCode": "TK001",
-          "ticketName": "Bruno Mars: 24K Magic Tour (CAT 1)",
-          "eventDate": "16-02-2026 19:00",
-          "quantity": 3,
-          "price": 2500000.00
-        }
-      ]
-    }
-  ]
-}
-```
-
-**Validations:**
-- ❌ 404 Not Found: BookedTicketId tidak terdaftar
+- ✅ All 5 API operations fully functional
+- ✅ `EventDate` treated as opaque string (`dd-MM-yyyy HH:mm`)
+- ✅ RFC 7807 error handling throughout
+- ✅ Complex UI with animations & modern design
+- ✅ No secrets or build artifacts in repo
+- ✅ Clean, maintainable, well-documented code
 
 ---
 
-### 4️⃣ PUT Edit Booked Ticket
+## 🔗 API Endpoints
 
-**Endpoint:** `PUT /api/v1/edit-booked-ticket/{bookedTicketId}`
+All endpoints run on `http://localhost:5176/api/v1/`
 
-**Request Body:**
-```json
-{
-  "tickets": [
-    {
-      "ticketCode": "B001",
-      "newQuantity": 5
-    }
-  ]
-}
-```
-
-**Response (200 OK):**
-```json
-[
-  {
-    "ticketCode": "B001",
-    "ticketName": "Avengers: Endgame (Reguler)",
-    "categoryName": "Bioskop",
-    "quantityLeft": 5
-  }
-]
-```
-
-**Validations:**
-- ❌ 404 Not Found: BookedTicketId tidak terdaftar
-- ❌ 404 Not Found: Kode tiket tidak terdaftar di booking
-- ❌ 400 Bad Request: Quantity > sisa quota
-- ❌ 400 Bad Request: Quantity < 1
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/get-available-ticket` | List tickets with pagination & filters |
+| `POST` | `/book-ticket` | Book one or more tickets |
+| `GET` | `/get-booked-ticket/{id}` | Get booking details by ID |
+| `PUT` | `/edit-booked-ticket/{id}` | Update quantity of booked ticket |
+| `DELETE` | `/revoke-ticket/{id}/{code}/{qty}` | Revoke ticket quantity |
+| `GET` | `/list-booked-ticket-ids` | List all booking reference IDs |
 
 ---
 
-### 5️⃣ DELETE Revoke Ticket
+## 📞 Support
 
-**Endpoint:** `DELETE /api/v1/revoke-ticket/{bookedTicketId}/{kodeTicket}/{qty}`
-
-**Response (200 OK):**
-```json
-[
-  {
-    "ticketCode": "B001",
-    "ticketName": "Avengers: Endgame (Reguler)",
-    "categoryName": "Bioskop",
-    "quantityLeft": 3
-  }
-]
-```
-
-**Validations:**
-- ❌ 404 Not Found: BookedTicketId tidak terdaftar
-- ❌ 404 Not Found: Kode tiket tidak terdaftar
-- ❌ 400 Bad Request: Qty > jumlah tiket yang di-book
-- ❌ 400 Bad Request: Qty ≤ 0
+- 📖 **Backend Guide**: See [Accelist-Acceloka-Ticketing-Api-Service/README.md](./Accelist-Acceloka-Ticketing-Api-Service/README.md)
+- 🎨 **Frontend Guide**: See [acceloka-ui/README.md](./Accelist-Acceloka-Ticketing-Api-Service/acceloka-ui/README.md)
+- 📋 **Implementation Plan**: See [implementation_plan.md.resolved](./implementation_plan.md.resolved)
 
 ---
 
-## Database Schema
+## 📄 License
 
-### `tiket` Table
-| Column | Type | Description |
-|--------|------|-------------|
-| `KodeTiket` | string (PK) | Ticket code (e.g., B001, TK001) |
-| `NamaTiket` | string | Ticket name |
-| `Kategori` | string | Category (Bioskop, Tiket Konser, etc.) |
-| `Harga` | decimal | Price |
-| `Quota` | int | Available quantity |
-| `EventDate` | datetime | Event date and time |
-
-### `Bookedtiket` Table
-| Column | Type | Description |
-|--------|------|-------------|
-| `BookedTicketId` | string (PK) | Booking ID (GUID) |
-| `KodeTiket` | string (PK, FK) | Ticket code |
-| `Qty` | int | Quantity booked |
-| `BookingDate` | datetime | Booking timestamp |
+Developed for **Accelist Exam 2 — 2026** as part of the internship competency examination.
 
 ---
 
-## Logging Configuration
-
-### Serilog Setup
-- **Log Level:** Information
-- **File Name:** `Log-{YYYYMMDD}.txt` (e.g., `Log-20260212.txt`)
-- **Location:** `/logs` folder (created automatically at runtime)
-- **Format:** `{Timestamp} [{Level}] {Message}`
-
-### Example Log Entry
-```
-2026-02-12 15:09:13.379 +07:00 [INF] Now listening on: http://localhost:5176
-2026-02-12 15:09:13.397 +07:00 [INF] Application started. Press Ctrl+C to shut down.
-2026-02-12 15:10:25.123 +07:00 [INF] HTTP GET /api/v1/get-available-ticket responded 200 in 45.678 ms
-```
-
----
-
-## Error Handling (RFC 7807)
-
-All errors follow the **RFC 7807** standard format:
-
-```json
-{
-  "type": "https://tools.ietf.org/html/rfc9110#section-15.5.1",
-  "title": "Bad Request",
-  "status": 400,
-  "detail": "Quantity harus lebih besar dari 0",
-  "instance": "/api/v1/book-ticket"
-}
-```
-
-### Common Error Scenarios
-| HTTP Status | Scenario | Example Detail |
-|-------------|----------|----------------|
-| **400 Bad Request** | Invalid input | "Quantity harus lebih besar dari 0" |
-| **404 Not Found** | Resource not found | "Booking dengan ID XYZ tidak ditemukan" |
-| **500 Internal Server Error** | Unexpected error | "An unexpected error occurred" |
----
-
-## Coding Conventions
-
-### C# Conventions
-- **PascalCase**: Class names, properties, methods
-  ```csharp
-  public class BookTicketCommandHandler { }
-  public string TicketCode { get; set; }
-  public async Task Handle() { }
-  ```
-
-- **camelCase**: Local variables, parameters
-  ```csharp
-  var bookedTicketId = Guid.NewGuid().ToString();
-  public async Task Handle(BookTicketCommand request) { }
-  ```
-
-- **Braces**: Always use `{}` for control structures
-  ```csharp
-  if (condition)
-  {
-      // Code here
-  }
-  ```
-
-- **LINQ**: Method syntax (lambda expressions)
-  ```csharp
-  var result = tickets.Where(t => t.Quota > 0)
-                      .OrderBy(t => t.Price)
-                      .ToList();
-  ```
-
-### Async/Await
-- All database operations use `async/await`
-  ```csharp
-  var ticket = await _repository.GetTicketAsync(id);
-  ```
----
-
-## License
-This project is developed for **Accelist Exam 1 - 2026** as part of the internship competency examination.
+**Happy coding! 🚀**
