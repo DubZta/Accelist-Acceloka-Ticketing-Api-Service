@@ -162,7 +162,6 @@ All endpoints run on `http://localhost:5176/api/v1/`
 
 - 📖 **Backend Setup**: [Backend_Guide.md](./Backend_Guide.md) — MARVEL Pattern, RFC 7807, Exam 1 2026
 - 🎨 **Frontend Setup**: [Frontend_Guide.md](./Frontend_Guide.md) — Next.js 16, Animations, Exam 2 2026
-- 📋 **Implementation Plan**: [implementation_plan.md.resolved](./implementation_plan.md.resolved)
 - 📂 **Backend Source**: [Accelist-Acceloka-Ticketing-Api-Service/](./Accelist-Acceloka-Ticketing-Api-Service/)
 - 📂 **Frontend Source**: [Accelist-Acceloka-Ticketing-Api-Service/acceloka-ui/](./Accelist-Acceloka-Ticketing-Api-Service/acceloka-ui/)
 
@@ -170,8 +169,6 @@ All endpoints run on `http://localhost:5176/api/v1/`
 
 ## 📄 License
 
-Developed for **Accelist Exam 2 — 2026** as part of the internship competency examination.
+Developed for **Accelist Exam 1 & 2 — 2026** as part of the internship competency examination.
 
 ---
-
-**Happy coding! 🚀**
