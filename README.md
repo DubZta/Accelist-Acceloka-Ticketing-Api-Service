@@ -1,6 +1,6 @@
 # 🎫 Accelist Acceloka - Ticketing Platform
 
-A complete SaaS ticketing solution built with **ASP.NET 10** (Backend) and **Next.js 16** (Frontend), developed for **Accelist Exam 2 — 2026**.
+A complete SaaS ticketing solution built with **ASP.NET 10** (Backend) and **Next.js 16** (Frontend), developed for **Accelist Exam 1 & 2 — 2026**.
 
 ---
 
@@ -72,7 +72,6 @@ The UI will start at `http://localhost:3000`
 ## 🏗️ Project Structure
 
 ```
-exam_ui/
 ├── README.md (YOU ARE HERE)                        📖 Main entry point
 ├── Backend_Guide.md                                👈 Backend setup guide
 ├── Frontend_Guide.md                               👈 Frontend setup guide
