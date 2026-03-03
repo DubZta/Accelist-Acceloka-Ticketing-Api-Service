@@ -15,4 +15,5 @@ public interface IBookedTicketRepository
     Task DeleteBookedTicketAsync(string bookedTicketId, string kodeTiket, CancellationToken cancellationToken = default);
     Task DeleteAllBookedTicketsByBookingIdAsync(string bookedTicketId, CancellationToken cancellationToken = default);
     Task<int> GetTotalBookedQuantityAsync(string kodeTiket, CancellationToken cancellationToken = default);
+    Task<List<string>> GetAllBookedTicketIdsAsync(CancellationToken cancellationToken = default);
 }

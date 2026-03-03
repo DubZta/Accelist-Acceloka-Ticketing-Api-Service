@@ -74,4 +74,12 @@ public class BookedTicketRepository : IBookedTicketRepository
             .Where(bt => bt.KodeTiket == kodeTiket)
             .SumAsync(bt => (int?)bt.Qty ?? 0, cancellationToken);
     }
+
+    public async Task<List<string>> GetAllBookedTicketIdsAsync(CancellationToken cancellationToken = default)
+    {
+        return await _context.Bookedtiket
+            .Select(bt => bt.BookedTicketId)
+            .Distinct()
+            .ToListAsync(cancellationToken);
+    }
 }

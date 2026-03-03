@@ -51,15 +51,17 @@ public class TicketRepository : ITicketRepository
 
         if (tanggalEventMinimal.HasValue)
         {
-            query = query.Where(t => t.EventDate >= tanggalEventMinimal.Value);
+            var startOfDay = tanggalEventMinimal.Value.Date;
+            query = query.Where(t => t.EventDate >= startOfDay);
         }
-
+ 
         if (tanggalEventMaksimal.HasValue)
         {
-            query = query.Where(t => t.EventDate <= tanggalEventMaksimal.Value);
+            // Include everything up to the end of the specified day (23:59:59.999)
+            var endOfDay = tanggalEventMaksimal.Value.Date.AddDays(1).AddTicks(-1);
+            query = query.Where(t => t.EventDate <= endOfDay);
         }
 
-        // Default ordering: newest date first, then lowest price
         if (string.IsNullOrWhiteSpace(orderBy))
         {
             query = query.OrderByDescending(t => t.EventDate).ThenBy(t => t.Harga);
@@ -72,13 +74,13 @@ public class TicketRepository : ITicketRepository
                 "kodetiket" => isDescending ? query.OrderByDescending(t => t.KodeTiket) : query.OrderBy(t => t.KodeTiket),
                 "namatiket" => isDescending ? query.OrderByDescending(t => t.NamaTiket) : query.OrderBy(t => t.NamaTiket),
                 "kategori" => isDescending ? query.OrderByDescending(t => t.Kategori) : query.OrderBy(t => t.Kategori),
-                "harga" => isDescending ? query.OrderByDescending(t => t.Harga) : query.OrderBy(t => t.Harga),
-                "eventdate" => isDescending ? query.OrderByDescending(t => t.EventDate) : query.OrderBy(t => t.EventDate),
+                "harga" or "price" => isDescending ? query.OrderByDescending(t => t.Harga) : query.OrderBy(t => t.Harga),
+                "eventdate" or "date" => isDescending ? query.OrderByDescending(t => t.EventDate) : query.OrderBy(t => t.EventDate),
+                "quota" => isDescending ? query.OrderByDescending(t => t.Quota) : query.OrderBy(t => t.Quota),
                 _ => query.OrderByDescending(t => t.EventDate).ThenBy(t => t.Harga)
             };
         }
 
-        // Pagination
         if (page.HasValue && pageSize.HasValue && page.Value > 0 && pageSize.Value > 0)
         {
             query = query.Skip((page.Value - 1) * pageSize.Value).Take(pageSize.Value);

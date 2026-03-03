@@ -64,6 +64,7 @@ public class TicketController : ControllerBase
 
         var formattedResponse = new
         {
+            bookedTicketId = result.BookedTicketId,
             tickets = result.Tickets.Select(t => new
             {
                 ticketCode = t.TicketCode,
@@ -151,6 +152,14 @@ public class TicketController : ControllerBase
         };
 
         var result = await _mediator.Send(command, cancellationToken);
+        return Ok(result);
+    }
+
+    [HttpGet("list-booked-ticket-ids")]
+    public async Task<ActionResult<List<string>>> ListBookedTicketIds(CancellationToken cancellationToken)
+    {
+        var query = new GetAllBookedTicketIdsQuery();
+        var result = await _mediator.Send(query, cancellationToken);
         return Ok(result);
     }
 }

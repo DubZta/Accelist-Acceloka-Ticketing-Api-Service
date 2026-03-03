@@ -2,6 +2,7 @@
 
 public class BookTicketResponse
 {
+    public string BookedTicketId { get; set; } = string.Empty;
     public List<BookTicketDetailDto> Tickets { get; set; } = new();
     public List<BookTicketsPerCategoryDto> TicketsPerCategories { get; set; } = new();
     public decimal PriceSummary { get; set; }
